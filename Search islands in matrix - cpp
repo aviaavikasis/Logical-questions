@@ -1,0 +1,149 @@
+#include<iostream>
+#include<list>
+using namespace std;
+
+/*
+
+author: Avia Avikasis
+
+question:
+give a matrix contain int values of 1 or 0.
+create a method that find the size of all
+"islands" of '1' values in the matrix.
+------------------------------------------
+
+for example:
+
+example 1
+input: 
+
+the 5x4 matrix:
+
+0 0 0 1
+0 1 1 1
+0 1 1 1
+0 0 1 0
+1 0 1 0
+
+output:
+9,1
+
+Because the matrix contain 'island' of 9 '1' values
+and additional 'island' of one '1' value.
+------------------------------------------------
+
+example 2
+
+input:
+the 4x4 matrix:
+
+1 0 1 0
+0 0 0 1
+1 0 0 0
+1 0 0 0
+
+output:
+
+1,1,1,2
+
+because the matrix contain three 'islands' of one '1' value
+and one 'island' of two '1' values
+
+*/
+
+
+
+int** CreateMatrix(int n1, int n2)
+{
+		int** matrix = new int* [n1]; //create pointer of pointers array
+		for (int i = 0; i < n1; i++)
+		{
+			matrix[i] = new int[n2]; //create int array for each pointer in pointers array
+		}
+		return matrix;
+}
+
+
+void FillMatrix(int** matrix,int n1,int n2)
+{
+	cout << "please enter values into the matrix : ";
+		for (int i = 0; i < n1; i++)
+		{
+			for (int j = 0; j < n2; j++)
+			{
+				cin >> matrix[i][j];      //cin 1 or 0 values from user, into the matrix
+			}
+		}
+}
+
+int SearchIsland(int** matrix,int** helpMatrix,int n1,int n2,int i,int j)
+{
+	    //If the recursive call goes beyond the matrix limits - \
+		the function returns 0
+		if (i < 0 || i > n1 - 1 || j < 0 || j > n2 - 1)   
+			return 0;
+
+		//if matrix[i][j] contain '1' value, and in help matrix the current cell\
+		is empty, the function return 1 + recursive call to up cell, right cell,left\
+		cell and down cell
+		if (matrix[i][j] == 1 and helpMatrix[i][j] != 1)
+		{
+			helpMatrix[i][j] = 1;//we marks in help matrix that the function already passed in this cell
+			return 1 + SearchIsland(matrix, helpMatrix, n1, n2, i + 1, j)\
+				+ SearchIsland(matrix, helpMatrix, n1, n2, i, j + 1)\
+				+ SearchIsland(matrix, helpMatrix, n1, n2, i, j - 1)\
+				+ SearchIsland(matrix, helpMatrix, n1, n2, i - 1, j);
+		}
+		else
+			return 0;
+}
+
+
+
+void PrintMatrix(int** matrix, int n1, int n2)
+{
+	for (int i = 0; i < n1; i++)
+	{
+		for (int j = 0; j < n2; j++)
+		{
+			cout << matrix[i][j] << " ";
+		}
+		cout << endl;
+	}
+	cout << endl;
+}
+
+
+
+int main()
+{
+	int n1;
+	int n2;
+	cout << "please enter width and height for matrix : ";
+	cin >> n1 >> n2;   // cin width and height for the matrix
+	int** matrix = CreateMatrix(n1, n2);
+	FillMatrix(matrix, n1, n2); // fill the matrix by user
+	int** helpMatrix = CreateMatrix(n1, n2); // help matrix for mark in which cells the\
+	                                            SearchIsland function already passed
+	std::list<int> result;
+	for (int i = 0; i < n1; i++)
+	{
+		for (int j = 0; j < n2; j++)
+		{
+			if (matrix[i][j] != 0 && helpMatrix[i][j] != 1)
+			{
+				result.push_back(SearchIsland(matrix,helpMatrix, n1, n2, i, j));
+			}
+		}
+	}
+
+	// Output
+	PrintMatrix(matrix,n1,n2);
+	for (int val : result)
+	{
+		if (val != 0)
+		    cout << val << "  ";
+	}
+}
+
+
