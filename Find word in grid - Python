@@ -1,0 +1,120 @@
+"""
+@author : Avia Avikasis
+
+question:
+given grid of n1 x n2 size, and word.
+write function that return whether the word
+contained in the grid or not. the word can
+appear in grid only in straight lines.
+================================================
+for example:
+
+example 1
+
+input:
+4x4 grid -
+p o i u
+y t r e
+w q l k
+j h g f
+word: "oirtq"
+
+output: True
+because this word appears in the grid as follows:
+  o i
+  t r
+  q
+-------------------------------------
+example 2
+
+input:
+6x4 grid -
+z x c v
+b n m a
+s d f g
+g h j j
+k l q w
+e r t y
+
+word: "ghfg"
+
+output: False
+becuse the word not appear in grid
+--------------------------------------
+
+"""
+
+# function that get the grid and word
+# and search the word in grid
+def back_tracking(grid, word):
+    # check for specific cell in grid, whether
+    # from it we can find the word
+    def exist(grid, word, result, i, j, z, help_grid):
+        if result == word:  # The word was found in the grid
+            return True
+        # make sure that recursive call don't out beyond the grid limit
+        if i < 0 or i > len(grid) - 1 or j < 0 or j > len(grid[0]) - 1 or help_grid[i][j] != None:
+            return False
+        if grid[i][j] == word[z]:
+            help_grid[i][j] = 1  # mark that the function already pass in this cell
+            result += str(grid[i][j])
+            z += 1
+            # recursive call for the cells that find in up,down,right and left
+            return exist(grid, word, result, i + 1, j, z, help_grid) \
+                   or exist(grid, word, result, i, j + 1, z, help_grid) \
+                   or exist(grid, word, result, i - 1, j, z, help_grid) \
+                   or exist(grid, word, result, i, j - 1, z, help_grid)
+        else:
+            return False
+
+    # function create new grid with None values
+    def create_empty_grid(n1, n2):
+        empty_grid = []
+        for i in range(n1):
+            empty_grid.append([None] * n2)
+        return empty_grid
+
+    # for each cell in the grid that contain
+    # letter that equal to word[0] we will check if from it
+    # we can find the word by exist function
+    for i in range(len(grid)):
+        for j in range(len(grid[0])):
+            help_grid = create_empty_grid(len(grid), len(grid[0]))
+            if word[0] == grid[i][j] and exist(grid, word, '', i, j, 0, help_grid):
+                return True
+
+    return False
+
+
+def fill_grid(grid):
+    # input size of grid from user in safety
+    while True:
+        try:
+            n1 = int(input("please enter the height of the grid : "))
+            n2 = int(input("please enter the width of the grid : "))
+            break
+        except:
+            print("input not valid, re-enter : ")
+            continue
+    print("please enter values into the grid : ")
+    for i in range(n1):
+        grid.append([])
+        for j in range(n2):
+            grid[i].append(input())
+    return grid
+
+
+def print_grid(grid):
+    for i in range(len(grid)):
+        for j in range(len(grid[i])):
+            print(grid[i][j], end=" ")
+        print()
+    print("\n")
+
+
+# main:
+grid = []
+grid = fill_grid(grid)
+word = input("please enter a word : ")
+print_grid(grid)
+print(back_tracking(grid, word))
