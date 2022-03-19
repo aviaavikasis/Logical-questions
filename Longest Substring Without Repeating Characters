@@ -1,0 +1,84 @@
+#include<iostream>
+#include<list>
+using namespace std;
+
+/*
+author: Avia Avikasis
+
+question:
+Given a string s, find the length of the longest substring 
+without repeating characters.
+
+================================================
+
+for example:
+
+example 1:
+
+Input: 
+s = "dfghhjkl"
+
+Output:
+4
+
+because the string include two substrings with equal long:
+"dfgh" , "hjkl", that contains different letters.
+
+---------------------------------------------
+
+
+example 2:
+
+Input:
+s = "bbbbb"
+
+Output:
+1
+
+because s contains only one different letter.
+
+----------------------------------------------
+
+Try it yourself:
+
+please copy and paste all text in this page to ide
+on your machine and run it.
+
+*/
+
+
+
+//the function that find the size of longest\
+  substring with different letters in string s
+int MaxSubstring(string s)
+{
+	list<int> Mylist;    // help list that save the different letters until we find duplicate
+	int biggest = 0;
+	for (int i = 0; i < s.size(); i++)
+	{
+		if (find(Mylist.begin(), Mylist.end(), s[i]) == Mylist.end())  //the current letter not existing in list
+		{
+			Mylist.push_back(s[i]);
+			continue;
+		}
+		if (Mylist.size() > biggest)   //else - if current letter existing in list
+			biggest = Mylist.size();
+		Mylist.clear();
+		Mylist.push_back(s[i]);
+	}
+	if (Mylist.size() > biggest)
+		biggest = Mylist.size();
+	return biggest;    
+
+}
+
+
+int main()
+{
+	string s;
+	cout << "please enter your string : " << endl;
+	cin >> s;  // input from user
+	cout << "the size of longest substring with different letters in string is : " \
+		<< MaxSubstring(s) << endl;
+	return 0;
+}
