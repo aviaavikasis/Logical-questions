@@ -1,0 +1,173 @@
+#include<iostream>
+#include <string>
+
+using namespace std;
+
+/*
+
+author: Avia Avikasis
+
+question:
+Given two sorted arrays a1 and a2 of
+size n and m respectively,
+return the median of the two sorted arrays.
+------------------------------------------
+
+for example:
+
+example 1
+
+Input: a1 = [1,3], a2 = [2]
+Output: 2
+
+Explanation: merged array = [1,2,3] and median is 2.
+------------------------------------------------
+
+example 2
+
+Input: a1 = [1,3,5,7], a2 = [2,4,6,8]
+Output: 4.5
+
+Explanation: merged array = [1,2,3,4,5,6,7,8] and median is 4.5
+
+------------------------------------------------
+
+Try it yourself:
+
+please copy and paste all text in this page to ide
+on your machine and run it.
+
+*/
+
+
+//fonction that Performs merge between two sorted arrays
+int* Merge(int* a1, int* a2,int n1,int n2)
+{
+	int i = 0;  //local counter for a1
+	int j = 0;  //local counter for a2
+	int* merge_array = new int[n1+n2];
+    
+	while (i < n1 && j < n2)
+	{
+		if (a1[i] <= a2[j])  //if the small value exist in a1[i]
+		{
+			merge_array[i + j] = a1[i++];
+		}
+
+		else                 //else - if the small value exist in a2[j]
+		{
+			merge_array[i + j] = a2[j++];
+		}
+	}
+	
+	if (i < n1)              //we aren't done to pass over all elements in a1
+	{
+		//insert all elements that stayed into merge_array
+		for (int index = i; index < n1; index++)
+			merge_array[j + index] = a1[index];
+	}
+
+	else if (j < n2)         //we aren't done to pass over all elements in a2
+	{
+		for (int index = j; index < n2; index++)
+			merge_array[i + index] = a2[index];
+	}
+	return merge_array;
+
+}
+
+//find the median of array
+double FindMedianArray(int* sort_array,int n)
+{
+	if (n % 2 != 0)
+		return sort_array[int(n / 2)];
+	else
+		return (double(sort_array[n / 2 - 1]) + double(sort_array[n / 2])) / 2;
+}
+
+
+//function that make sure that array is sorted
+bool CheckSort(int* array,int n1)
+{
+	for (int i = 0; i < n1-1; i++)
+	{
+		if (array[i] > array[i + 1])
+		{
+			cout << "Sorry, the array is not sorted." << endl;
+			return false;
+		}
+	}
+	return true;
+}
+
+/*
+the function get integer variable by refernce and string that tell the
+purpose of n and input n from user in safety
+*/
+void GetNumber(int& n,string num_for)
+{
+	string line;
+	if (num_for == "size")
+	{
+		cin >> n;
+		getline(cin, line);  //To make sure there are no characters left in the buffer
+		while (cin.fail() || n < 1 || !line.empty())
+		{
+			cin.clear();
+			cin.ignore(numeric_limits<streamsize>::max(), '\n');
+			cout << "Not a valid number. Please reenter: ";
+			cin >> n;
+			getline(cin, line);
+		}
+	}
+	else
+	{
+		cin >> n;
+		getline(cin, line);
+		while (cin.fail() || !line.empty())
+		{
+			cin.clear();
+			cin.ignore(numeric_limits<streamsize>::max(), '\n');
+			cout << "Not a valid number. Please reenter: ";
+			cin >> n;
+			getline(cin, line);
+
+		}
+	}
+
+}
+
+
+int main()
+{
+	int n1 = 0;  //size of a1
+	int n2 = 0;  //size of a2
+	cout << "please enter size n for first sort array : " << endl;
+	GetNumber(n1,"size");
+	cout << "please enter size m for first sort array : " << endl;
+	GetNumber(n2,"size");
+	int* a1 = new int[n1]{0};
+	int* a2 = new int[n2]{0};
+	do
+	{
+		cout << "please enter " << n1 << " values for first array, in non - decrease order : "<<endl;
+		for (int i = 0; i < n1; i++)
+		{
+			GetNumber(*(a1 + i), "values");
+		}
+	} while (CheckSort(a1, n1) == false);
+	
+	do
+	{
+		cout << "please enter " << n2 << " values for second array, in non - decrease order : "<<endl;
+		for (int i = 0; i < n2; i++)
+		{
+			GetNumber(*(a2 + i), "values");
+		}
+	} while (CheckSort(a2, n2) == false);
+
+	int* merge_array = Merge(a1, a2, n1, n2);
+	cout << "The median of two arrays : " << FindMedianArray(merge_array,n1+n2) <<endl;
+	return 0;
+}
+
