@@ -1,0 +1,205 @@
+
+
+
+
+
+
+
+#pragma once                                                         //Node.h
+
+/*
+class Node is present node in linked list
+*/
+class Node
+{
+	int value; 
+	Node* next; 
+
+public:
+	Node()
+	{
+		this->value = 0;
+		this->next = nullptr;
+	}
+
+	Node(int value, Node* next)
+	{
+		this->value = value;
+		this->next = next;
+	}
+
+	int getValue() { return this->value; }
+	void setValue(int value) { this->value = value; }
+	Node* getNext() { return this->next; }
+	void setNext(Node* next) { this->next = next; }
+
+};
+
+//++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+
+
+#pragma once                                                          //List.h
+#include "Node.h"
+class List
+{
+public:
+
+	List(){}
+	Node* CreateList();
+};
+
+//+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+
+
+
+
+#include "List.h"                                                     //List.cpp
+#include "Node.h"
+#include<iostream>
+#include <string>
+using namespace std;
+
+
+/*
+the function get integer variable by refernce and string that tell the
+purpose of n and input n from user in safety
+*/
+void GetNumber(int& n)
+{
+	string line;
+	{
+		cin >> n;
+		getline(cin, line);  //To make sure there are no characters left in the buffer
+		while (cin.fail() || n < -1 || !line.empty())
+		{
+			cin.clear();
+			cin.ignore(numeric_limits<streamsize>::max(), '\n');
+			cout << "Not a valid number. Please reenter: "<<endl;
+			cin >> n;
+			getline(cin, line);
+		}
+	}
+
+}
+
+Node* List::CreateList()
+{
+	int input;
+	Node* new_node1 = new Node();
+	Node* new_node2 = new Node();
+	Node* head = new_node1;
+	cout << "please enter integer values for list, and finally press -1 : "<< endl;
+	while (true)
+	{
+		GetNumber(input);
+		if (input == -1)
+			break;
+		new_node2 = new Node();
+		new_node1->setValue(input);
+		new_node1->setNext(new_node2);
+		new_node1 = new_node2;
+	}
+	return head;
+
+}
+
+//++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+
+
+
+#include "List.h"                                                    //main.cpp
+#include "Node.h"
+#include<iostream>
+#include<list>
+#include<string>
+using namespace std;
+
+void PrintList(Node* head_list)
+{
+	Node* copy_head_list = head_list;
+	cout << "<";
+	while (copy_head_list->getNext()->getNext() != nullptr)
+	{
+		cout << copy_head_list->getValue() << ",";
+		copy_head_list = copy_head_list->getNext();
+	}
+	if (copy_head_list->getValue() != -1)
+		cout << copy_head_list->getValue();
+	cout << ">"<< endl;
+}
+
+
+
+/*
+the function get integer variable by refernce 
+and input n from user in safety
+*/
+void GetNumber(int& n,int max)
+{
+	string line;
+	{
+		cin >> n;
+		getline(cin, line);  //To make sure there are no characters left in the buffer
+		while (cin.fail() || n < 1 || n > max || !line.empty())
+		{
+			cin.clear();
+			cin.ignore(numeric_limits<streamsize>::max(), '\n');
+			cout << "Not a valid number. Please reenter: "<<endl;
+			cin >> n;
+			getline(cin, line);
+		}
+	}
+}
+
+
+int main()
+{
+	List* list = new List();          //create new list
+	Node* head = list->CreateList();  //filling the list with positive integer values
+	Node* copy_head_list = head;      //copy of head, for run along the list without forget the head
+	std::list<Node*> listOfaddresses; //list that save all addresses of nodes while runing
+	std::list<Node*>::iterator it;
+
+	//push all addresses of nodes into the list
+	while (copy_head_list->getNext() != nullptr)
+	{
+		listOfaddresses.push_back(copy_head_list);
+		copy_head_list = copy_head_list->getNext();
+	}
+	
+	cout << "the list before delete specific node : " << endl;
+	PrintList(head);
+	
+	int index;
+	cout << "please enter the index from end of list that you are want to delete : " << endl;
+	GetNumber(index,listOfaddresses.size());
+	Node* node;
+	it = listOfaddresses.end();
+
+	if (index > 1 && index < listOfaddresses.size()) 
+	{
+		for (int i = 0; i <= index; i++)
+		{
+			it--;
+		}
+		node = *it;
+		it++;
+		it++;
+		node->setNext(*it);  //execute bypassing of the node we are want to delete
+	}
+	else if (index == 1 && index < listOfaddresses.size())
+	{
+		it = listOfaddresses.end();
+		it--;
+		(*it)->setNext(nullptr);   // disregard the last node
+	}
+	else if(index == 1 && listOfaddresses.size() == 1)
+		head->setValue(-1); // -1 is mark for PrintList function to print empty list
+	else if (index == listOfaddresses.size())
+		head = (*(listOfaddresses.begin()++))->getNext(); //disregard the first node
+
+	cout << "the list after delete specific node : " << endl;
+	PrintList(head);
+	
+	return 0;
+}
