@@ -1,9 +1,48 @@
+/*
+author: Avia Avikasis
+
+question:
+Given the head of a linked list, remove the n-th node from 
+the end of the list and return its head.
+
+================================================
+
+for example:
+
+example 1
+
+Input: head = < 1,2,3,4,5 >, n = 2
+Output: < 1,2,3,5 >
+
+explanation: the element that located in
+index 2 from the end of list is 4.
+
+---------------------------------------------
 
 
+example 2
+
+Input: head = < 1,2 >, n = 1
+Output: <1>
 
 
+----------------------------------------------
 
+example 3
 
+Input: head = <1>, n = 1
+Output: <>
+
+----------------------------------------------
+
+Try it yourself:
+
+the result  devide for 4 files, by mark of "+++..."
+copy and paste all the text on your machine and run it.
+
+*/
+
+//++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 
 #pragma once                                                         //Node.h
 
